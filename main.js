@@ -44,13 +44,20 @@ function getMarketData(options, coin_prices, callback) { //GET JSON DATA
     return new Promise(function (resolve, reject) {
         request(options.URL, function (error, response, body) {
             try {
+                if (options.marketName == "shapeshift") {
+                    //console.log("DATA: " + data);
+                    //console.log("BODY: " + body);
+                }
                 let data = JSON.parse(body);
+                
                 console.log("Success", options.marketName);
                 if (options.marketName) {
-
                     let newCoinPrices;
 
                     newCoinPrices = options.lastPrice(data, coin_prices, options.toBTCURL);
+                    if(options.marketName == "c-cex"){
+                        //console.log(coin_prices);
+                    }
                     numberOfRequests++;
                     if (numberOfRequests >= 1) computePrices(coin_prices);
                     resolve(newCoinPrices);
@@ -113,7 +120,7 @@ function computePrices(data) {
         results.sort(function (a, b) {
             return a[1] - b[1];
         });
-
+        //console.log(results);
         io.emit('results', results);
     }
 }
