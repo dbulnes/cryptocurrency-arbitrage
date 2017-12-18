@@ -27,14 +27,15 @@ Example CEX.IO API response structure
         lastPrice: function (data, coin_prices) {  
             return new Promise(function (res, rej) {   
                 try { 
-                    for (let newMarket in data) {
-                        if(data[newMarket].pair.includes(':BTC')) { 
-                            let coinName = data[newMarket].pair.replace(":BTC", '').toUpperCase(); 
+                    let newTicker = data.data;
+                    for (let newMarket in newTicker) {
+                        if(newTicker[newMarket].pair.includes(':BTC')) { 
+                            let coinName = newTicker[newMarket].pair.replace(":BTC", '').toUpperCase(); 
                             //If we dont want the given coin, return an empty object for that coin
                             if (!coin_prices[coinName]) {
                                 coin_prices[coinName] = {}; 
                             }
-                            coin_prices[coinName].cexio = data[newMarket].last; 
+                            coin_prices[coinName].cexio = newTicker[newMarket].last; 
                         } 
                     } 
                     res(coin_prices); 

@@ -14,7 +14,7 @@ Example Shapeshift API response structure
     }
 ]
 */
-
+    let BTC_first = true;
     return { 
         marketName: 'shapeshift', 
         URL: 'https://shapeshift.io/marketinfo/', //URL To Fetch API From. 
@@ -25,13 +25,24 @@ Example Shapeshift API response structure
             return new Promise(function (res, rej) {   
                 try { 
                     for (let newMarket in data) {
-                        if(data[newMarket].pair.includes('_BTC')) { 
-                            let coinName = data[newMarket].pair.replace("_BTC", '').toUpperCase(); 
-                            //If we dont want the given coin, return an empty object for that coin
-                            if (!coin_prices[coinName]) {
-                                coin_prices[coinName] = {}; 
+                        if (BTC_first) {
+                            if(data[newMarket].pair.includes('BTC_')) { 
+                                let coinName = data[newMarket].pair.replace("BTC_", '').toUpperCase(); 
+                                //If we dont want the given coin, return an empty object for that coin
+                                if (!coin_prices[coinName]) {
+                                    coin_prices[coinName] = {}; 
+                                }
+                                coin_prices[coinName].shapeshift = (1/data[newMarket].rate); 
                             }
-                            coin_prices[coinName].shapeshift = data[newMarket].rate; 
+                        } else {
+                            if(data[newMarket].pair.includes('_BTC')) { 
+                                let coinName = data[newMarket].pair.replace("_BTC", '').toUpperCase(); 
+                                //If we dont want the given coin, return an empty object for that coin
+                                if (!coin_prices[coinName]) {
+                                    coin_prices[coinName] = {}; 
+                                }
+                                coin_prices[coinName].shapeshift = data[newMarket].rate; 
+                            }
                         } 
                     } 
                     res(coin_prices); 
